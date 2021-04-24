@@ -19,7 +19,7 @@ public:
 	}
 private:
 	void skipWhitespace();
-	void skipComment();
-	void addtokenType()
+	void addtokenType(); 
+	void skipComment(char commentType);
 };
 

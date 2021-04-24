@@ -1,53 +1,224 @@
 #include "scanner.h"
 #include <regex>
+#include <cctype>
 
-shared_ptr<Token> Scanner::nextToken(){
-
-	// 
+shared_ptr<Token> Scanner::nextToken()
+{
+	char prev = 0;
+	//
 	while (this->nextChar())
-	{	
-		std:string token(1,this->ch);
+	{
+		string token(1, ch);
 		// skip whitespaces
-		if(std::regex_match (token, std::regex("/s"))){
+		if (std::regex_match(token, std::regex("/s")))
+		{
 			skipWhitespace();
 		}
 		// check for comment opening
-		if(this->ch == '/'){
-			if(this->nextChar() && this->ch == '*'){
-
-
-
-			}else{
-				// creat a token 
-				return shared_ptr<Token>
-					(new Token(static_cast<tokenType>(this->ch), token));
+		else if (ch == '/')
+		{
+			prev = this->ch;
+			if (this->nextChar())
+			{
+				if (ch == '*')
+					this->skipComment('*');
+				else if (ch == '/')
+					this->skipComment('/');
+			}
+			else
+			{
+				this->ch = prev;
 				this->inputFile.unget();
 			}
-
-
+			// creat a token
+			// return shared_ptr<Token>(new Token(static_cast<tokenType>(ch), token));
 		}
-
+		switch (ch) // each character represents itself
+		{
+		case ';':
+		case '{':
+		case '}':
+		case ',':
+		case ':':
+		case '(':
+		case ')':
+		case '[':
+		case ']':
+		case '~':
+		case '*':
+		case '%':
+		case '^':
+		case '?':
+		case '/':
+			return shared_ptr<Token>(new Token(static_cast<tokenType>(ch), string(1, ch)));
+			break;
+		}
+		//	++ or +
+		if (ch == '+')
+		{
+			if (this->nextChar() && ch == '+')
+			{
+				return shared_ptr<Token>(new Token(INC_OP, "++"));
+			}
+			else
+			{
+				this->inputFile.unget();
+				return shared_ptr<Token>(new Token(static_cast<tokenType>('+'), string(1, '+')));
+			}
+		}
+		//	-- or -
+		else if (ch == '-')
+		{
+			if (this->nextChar() && ch == '-')
+			{
+				return shared_ptr<Token>(new Token(INC_OP, "--"));
+			}
+			else
+			{
+				this->inputFile.unget();
+				return shared_ptr<Token>(new Token(static_cast<tokenType>('-'), string(1, '-')));
+			}
+		}
+		//	-> or -
+		else if (ch == '-')
+		{
+			if (this->nextChar() && ch == '>')
+			{
+				return shared_ptr<Token>(new Token(PTR_OP, "->"));
+			}
+			else
+			{
+				this->inputFile.unget();
+				return shared_ptr<Token>(new Token(static_cast<tokenType>('-'), string(1, '-')));
+			}
+		}
+		//	&& or &
+		else if (ch == '&')
+		{
+			if (this->nextChar() && ch == '&')
+			{
+				return shared_ptr<Token>(new Token(AND_OP, "&&"));
+			}
+			else
+			{
+				this->inputFile.unget();
+				return shared_ptr<Token>(new Token(static_cast<tokenType>('&'), string(1, '&')));
+			}
+		}
+		//	|| or |
+		else if (ch == '|')
+		{
+			if (this->nextChar() && ch == '|')
+			{
+				return shared_ptr<Token>(new Token(OR_OP, "||"));
+			}
+			else
+			{
+				this->inputFile.unget();
+				return shared_ptr<Token>(new Token(static_cast<tokenType>('|'), string(1, '|')));
+			}
+		}
+		//	<= or <
+		else if (ch == '<')
+		{
+			if (this->nextChar() && ch == '=')
+			{
+				return shared_ptr<Token>(new Token(LE_OP, "<="));
+			}
+			else
+			{
+				this->inputFile.unget();
+				return shared_ptr<Token>(new Token(static_cast<tokenType>('<'), string(1, '<')));
+			}
+		}
+		//	>= or >
+		else if (ch == '>')
+		{
+			if (this->nextChar() && ch == '=')
+			{
+				return shared_ptr<Token>(new Token(GE_OP, ">="));
+			}
+			else
+			{
+				this->inputFile.unget();
+				return shared_ptr<Token>(new Token(static_cast<tokenType>('>'), string(1, '>')));
+			}
+		}
+		//	== or =
+		else if (ch == '=')
+		{
+			if (this->nextChar() && ch == '=')
+			{
+				return shared_ptr<Token>(new Token(EQ_OP, "=="));
+			}
+			else
+			{
+				this->inputFile.unget();
+				return shared_ptr<Token>(new Token(static_cast<tokenType>('='), string(1, '=')));
+			}
+		}
+		//	!= or !
+		else if (ch == '!')
+		{
+			if (this->nextChar() && ch == '=')
+			{
+				return shared_ptr<Token>(new Token(NE_OP, "!="));
+			}
+			else
+			{
+				this->inputFile.unget();
+				return shared_ptr<Token>(new Token(static_cast<tokenType>('!'), string(1, '!')));
+			}
+		}
+		// CONSTANT
+		else if (isdigit(ch) || ch == '.')
+		{
+			string constant(1, ch);
+			while (this->nextChar() && (isdigit(ch) || ch == 'E' || ch == 'e' || ch == '.'))
+			{
+				constant.push_back(ch);
+			}
+			if (std::regex_match(constant, std::regex("\\d+")) ||
+				std::regex_match(constant, std::regex("\\d+[eE][+-]?\\d+")) ||
+				std::regex_match(constant, std::regex("\\d*\\.(\\d+[eE]?[+-]?\\d+)?")) ||
+				std::regex_match(constant, std::regex("\\d+\\.(\\d*[eE]?[+-]?\\d+)?")))
+			{
+				return shared_ptr<Token>(new Token(CONSTANT, constant));
+			}
+			else
+			{
+				return shared_ptr<Token>(new Token(ERROR, constant));
+			}
+		}
 	}
-	
+
+	return NULL;
 }
 
 // skip all whitespaces from postion until a char appears
-void Scanner::skipWhitespace(){
-	std::string s(1, this->ch);
-	while (std::regex_match (s, std::regex("/s"))
+void Scanner::skipWhitespace()
+{
+	std::string s(1, ch);
+	while (std::regex_match(s, std::regex("/s")) && this->nextChar())
+		;
 	{
-		this->nextChar();
 	}
 	this->inputFile.unget();
 }
 
-void Scanner::skipComment()
+// skip comment of type /* COMMENT */ from COMMENT start postion until the end
+// skip comment of type // COMMENT from //^ to ENDLINE
+void Scanner::skipComment(char commentType)
 {
-	char c, prev = 0; 
-	while (c = input())
+	char curr, prev = 0;
+	while (this->nextChar())
 	{
-		if (c == '/' && prev == '*')
+		curr = ch;
+		if (commentType == '*' && curr == '/' && prev == '*')
 			return;
-		prev = c;
+
+		if (commentType == '/' && curr == '\n')
+			return;
+		prev = curr;
 	}
 }

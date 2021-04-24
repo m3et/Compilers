@@ -23,7 +23,11 @@ shared_ptr<Token> SymbolTable::lookupToken(string text)
 
 void SymbolTable::insertToken(string text, shared_ptr<Token> tokenp)
 {
-	this->symMap.insert(std::pair<string, shared_ptr<Token>>(text, tokenp));
+	if (symMap.count(text) == 0)
+	{	
+		// cout << "Insert " << text << endl;
+		this->symMap.insert(std::pair<string, shared_ptr<Token>>(text, tokenp));
+	}
 }
 
 void SymbolTable::xref()

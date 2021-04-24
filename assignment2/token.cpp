@@ -15,7 +15,7 @@ string Token::getText(){
 }
 
 void Token::printToken(){
-    cout << this->type<<"   "<<this->text<<endl;
+    cout << this->type <<'\t'<<this->text<<endl;
 }
 
 //vatToken class
