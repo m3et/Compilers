@@ -45,11 +45,6 @@ WS  			[ \t\n]
 
 {L}({L}|{D})*	{ return(IDENTIFIER); }
 
-D			[0-9]
-L			[a-zA-Z_]
-E			[Ee][+-]?{D}+
-WS  			[ \t\n]
-
 [1-9]{D}*		{ return(CONSTANT); }		10
 {D}+{E}			{ return(CONSTANT); }		123E4
 {D}*"."{D}+{E}?	{ return(CONSTANT); }		.123
