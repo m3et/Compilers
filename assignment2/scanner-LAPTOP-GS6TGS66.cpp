@@ -199,14 +199,9 @@ shared_ptr<Token> Scanner::nextToken()
 				identifier.push_back(this->ch);
 			}
 			
-			if(std::regex_match(identifier, std::regex("[a-zA-Z_][a-zA-Z0-9_]*"))){
-				auto it = this->symTab.symMap.find(identifier);
-				if(it != this->symTab.symMap.end()){
-					
-				}
-					return shared_ptr<Token>(new Token(IDENTIFIER, identifier));
-			}
-			
+			if(std::regex_match(identifier, std::regex("[a-zA-Z_][a-zA-Z0-9_]*")))
+				
+				return shared_ptr<Token>(new Token(IDENTIFIER, identifier));
 			else
 
 
