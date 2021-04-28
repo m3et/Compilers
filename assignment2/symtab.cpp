@@ -17,8 +17,11 @@ void SymbolTable::initReserved()
 
 shared_ptr<Token> SymbolTable::lookupToken(string text)
 {
+
 	auto it = this->symMap.find(text);
-	return it->second;
+	if(it != this->symMap.end())
+		return it->second;
+	return shared_ptr<Token>(nullptr);
 }
 
 void SymbolTable::insertToken(string text, shared_ptr<Token> tokenp)
