@@ -9,28 +9,38 @@ void Parser::parse()
 	Symbol X = stack.back();
 
 	/*
+	const string terminalStrings[] = { "id" , "+" , "*" , "(" , ")" , "$" , "e" };
+	const string tokenStrings[] = { "E" , "E_" , "T" , "T_" , "F" };
+
 	enum terminal { ID , PLUS , ASTERISK , LPAREN , RPAREN , END , EPSILON };
 	enum nonTerminal { E , E_ , T , T_ , F , ERROR };
 	enum Type { TERM , NONTERM };
 
 	*/
-	while (X.getSymbol() != terminal::END)
 
+	while (X.getSymbol() != terminal::END)
 	{
+		// cout << "X is " << X.getSymbol() << "\t Symbole is ";
+		// cout << endl;
+		// cout << "a is " << a << endl;
+
 		if (X.getType() == TERM && X.getSymbol() == static_cast<int>(a))
 		{
+			printLM();
 			accepted.push_back(X);
 			stack.pop_back();
 			a = this->nextToken();
 		}
 		else if (X.getType() == TERM)
 		{
-			std::cout << "syntax error 1" << std::endl;
+			printLM();
+			std::cout << "syntax error" << std::endl;
 			return;
 		}
 		else if (table.at(X.getSymbol()).at(static_cast<int>(a)) == -1)
 		{
-			std::cout << "syntax error 2" << std::endl;
+			printLM();
+			std::cout << "syntax error" << std::endl;
 			return;
 		}
 		else
@@ -48,8 +58,11 @@ void Parser::parse()
 					stack.pop_back();
 			}
 		}
+	
+
 		X = stack.back();
 	}
+	printLM();
 }
 
 void Parser::printLM()
@@ -74,7 +87,7 @@ void Parser::printLM()
 
 	std::cout << std::endl;
 }
-// enum terminal { ID , PLUS , ASTERISK , LPAREN , RPAREN , END , EPSILON };
+
 terminal Parser::nextToken()
 {
 	std::string word;
@@ -88,11 +101,11 @@ terminal Parser::nextToken()
 	else if (word == "*")
 		return terminal::ASTERISK;
 	else if (word == "(")
-		return terminal::RPAREN;
-	else if (word == ")")
 		return terminal::LPAREN;
-	else if (word == "$")
-		return terminal::END;
+	else if (word == ")")
+		return terminal::RPAREN;
+	else if (word == "e")
+		return terminal::EPSILON;
 
-	return terminal::EPSILON;
+	return terminal::END;
 }

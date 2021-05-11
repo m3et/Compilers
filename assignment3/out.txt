@@ -1,0 +1,88 @@
+
+~~ TEST NUMBER 1 ~~
+| E 
+| T E_ 
+| F T_ E_ 
+| id T_ E_ 
+id | T_ E_ 
+id | E_ 
+id | + T E_ 
+id + | T E_ 
+id + | F T_ E_ 
+id + | id T_ E_ 
+id + id | T_ E_ 
+id + id | * F T_ E_ 
+id + id * | F T_ E_ 
+id + id * | id T_ E_ 
+id + id * id | T_ E_ 
+id + id * id | E_ 
+id + id * id | 
+~~ TEST NUMBER 2 ~~
+| E 
+| T E_ 
+| F T_ E_ 
+| id T_ E_ 
+id | T_ E_ 
+id | * F T_ E_ 
+id * | F T_ E_ 
+id * | ( E ) T_ E_ 
+id * ( | E ) T_ E_ 
+id * ( | T E_ ) T_ E_ 
+id * ( | F T_ E_ ) T_ E_ 
+id * ( | id T_ E_ ) T_ E_ 
+id * ( id | T_ E_ ) T_ E_ 
+id * ( id | E_ ) T_ E_ 
+id * ( id | + T E_ ) T_ E_ 
+id * ( id + | T E_ ) T_ E_ 
+id * ( id + | F T_ E_ ) T_ E_ 
+id * ( id + | id T_ E_ ) T_ E_ 
+id * ( id + id | T_ E_ ) T_ E_ 
+id * ( id + id | E_ ) T_ E_ 
+id * ( id + id | ) T_ E_ 
+id * ( id + id ) | T_ E_ 
+id * ( id + id ) | E_ 
+id * ( id + id ) | 
+~~ TEST NUMBER 3 ~~
+| E 
+| T E_ 
+| F T_ E_ 
+| id T_ E_ 
+id | T_ E_ 
+id | E_ 
+id | 
+~~ TEST NUMBER 4 ~~
+| E 
+| T E_ 
+| F T_ E_ 
+| ( E ) T_ E_ 
+( | E ) T_ E_ 
+( | T E_ ) T_ E_ 
+( | F T_ E_ ) T_ E_ 
+( | id T_ E_ ) T_ E_ 
+( id | T_ E_ ) T_ E_ 
+( id | E_ ) T_ E_ 
+( id | + T E_ ) T_ E_ 
+( id + | T E_ ) T_ E_ 
+( id + | F T_ E_ ) T_ E_ 
+( id + | id T_ E_ ) T_ E_ 
+( id + id | T_ E_ ) T_ E_ 
+( id + id | E_ ) T_ E_ 
+( id + id | ) T_ E_ 
+syntax error
+~~ TEST NUMBER 5 ~~
+| E 
+| T E_ 
+| F T_ E_ 
+| ( E ) T_ E_ 
+( | E ) T_ E_ 
+( | T E_ ) T_ E_ 
+( | F T_ E_ ) T_ E_ 
+( | id T_ E_ ) T_ E_ 
+( id | T_ E_ ) T_ E_ 
+( id | E_ ) T_ E_ 
+( id | + T E_ ) T_ E_ 
+( id + | T E_ ) T_ E_ 
+( id + | F T_ E_ ) T_ E_ 
+( id + | id T_ E_ ) T_ E_ 
+( id + id | T_ E_ ) T_ E_ 
+syntax error
