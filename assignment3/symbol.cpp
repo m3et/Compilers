@@ -1,18 +1,20 @@
 #include "symbol.h"
 #include "strings.h"
 
-Type Symbol::getType(){
-    return this->type;
+void Symbol::printSymbol()
+{
+  if (this->getType() == TERM)
+    std::cout << terminalStrings[this->getSymbol()] << ' ';
+  else
+    std::cout << tokenStrings[this->getSymbol()] << ' ';
 }
 
-int Symbol::getSymbol(){
-    return this->symbol;
+Type Symbol::getType()
+{
+  return this->type;
 }
 
-void Symbol::printSymbol(){
-    if(this->getType() == NONTERM)
-        std::cout << tokenStrings[this->getSymbol()] << ' ';
-    else
-        std::cout << terminalStrings[this->getSymbol()] << ' ';
+int Symbol::getSymbol()
+{
+  return this->symbol;
 }
-

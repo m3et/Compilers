@@ -2,63 +2,56 @@
 
 void Parser::parse()
 {
+	// Push END and First Rule to stack
+	stack.push_back(Symbol(END, TERM));
+	stack.push_back(Symbol(E, NONTERM));
+	// let a be first token from file
 	terminal a = this->nextToken();
-
-	stack.push_back(Symbol(terminal::END, TERM));
-	stack.push_back(Symbol(nonTerminal::E, NONTERM));
+	// let X be top of stack = First Rule E
 	Symbol X = stack.back();
 
-	/*
-	const string terminalStrings[] = { "id" , "+" , "*" , "(" , ")" , "$" , "e" };
-	const string tokenStrings[] = { "E" , "E_" , "T" , "T_" , "F" };
-
-	enum terminal { ID , PLUS , ASTERISK , LPAREN , RPAREN , END , EPSILON };
-	enum nonTerminal { E , E_ , T , T_ , F , ERROR };
-	enum Type { TERM , NONTERM };
-
-	*/
-
-	while (X.getSymbol() != terminal::END)
+	// stack !isEmpty()
+	while (X.getSymbol() != END)
 	{
-		// cout << "X is " << X.getSymbol() << "\t Symbole is ";
-		// cout << endl;
-		// cout << "a is " << a << endl;
-
+		// if( X = a )
 		if (X.getType() == TERM && X.getSymbol() == static_cast<int>(a))
 		{
 			printLM();
-			accepted.push_back(X);
-			stack.pop_back();
+			// push to accepted input input
+			this->accepted.push_back(X);
+			// pop the stack
+			this->stack.pop_back();
+			// let a be next token from file
 			a = this->nextToken();
 		}
 		else if (X.getType() == TERM)
 		{
+			// Ho no you are not making any sense
 			printLM();
 			std::cout << "syntax error" << std::endl;
 			return;
 		}
 		else if (table.at(X.getSymbol()).at(static_cast<int>(a)) == -1)
 		{
+			// Ho no you are not obeying the rules
 			printLM();
 			std::cout << "syntax error" << std::endl;
 			return;
 		}
 		else
 		{
+			// output the production X -> Y1Y2...Yk
 			printLM();
 			stack.pop_back();
-			// for (auto it = rules.at(tableVal).begin(); it != stack.end(); ++it)
-			// {
-			// 	stack.push_back(*it)
-			// }
+			// push YkYk-1...Y1 into stack
 			for (auto &it : rules.at(table.at(X.getSymbol()).at(static_cast<int>(a))))
 			{
 				stack.push_back(it);
-				if (it.getType() == TERM && it.getSymbol() == terminal::EPSILON)
+				// remove EPSILON from stack
+				if (it.getType() == TERM && it.getSymbol() == EPSILON)
 					stack.pop_back();
 			}
 		}
-	
 
 		X = stack.back();
 	}
@@ -67,21 +60,13 @@ void Parser::parse()
 
 void Parser::printLM()
 {
-	/*
-	for (auto it = s.begin(); it != s.end(); it++) {
-		cout << *it.printSymbol() << endl;
-	}
-
-	for (vector<Symbol>::reverse_iterator i = my_vector.rbegin(); i != my_vector.rend(); ++i ) { 
-		print
-	}
-} 
-*/
-	for (auto it = accepted.begin(); it != accepted.end(); ++it)
-		it->printSymbol();
+	// output the stack production Y1Y2...Yk
+	for (auto it : accepted)
+		it.printSymbol();
 
 	std::cout << "| ";
 
+	// output the accepted production YkYk-1...Y1
 	for (auto it = stack.rbegin(); it != stack.rend() - 1; ++it)
 		it->printSymbol();
 
@@ -92,7 +77,6 @@ terminal Parser::nextToken()
 {
 	std::string word;
 	this->inputFile >> word;
-	int tokenVal;
 
 	if (word == "id")
 		return terminal::ID;
